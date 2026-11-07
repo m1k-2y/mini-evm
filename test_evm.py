@@ -222,3 +222,111 @@ def test_div_stack_underflow():
 
     with pytest.raises(RuntimeError, match="Stack Underflow"):
         test_evm.run()
+
+def test_pop():
+
+    bytecode = bytes.fromhex("600560075000")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [5]
+
+    assert test_evm.pc == 5
+
+def test_pop_single():
+
+    bytecode = bytes.fromhex("60055000")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == []
+
+    assert test_evm.pc == 3
+
+def test_pop_empty():
+
+    bytecode = bytes.fromhex("5000")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    with pytest.raises(RuntimeError, match="Stack Underflow"):
+        test_evm.run()
+
+def test_dup1():
+
+    bytecode = bytes.fromhex("60058000")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [5, 5]
+
+    assert test_evm.pc == 3
+
+def test_dup1_multiple():
+
+    bytecode = bytes.fromhex("600360058000")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [3, 5, 5]
+
+    assert test_evm.pc == 5
+
+def test_dup1_stack_underflow():
+
+    bytecode = bytes.fromhex("8000")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    with pytest.raises(RuntimeError, match="Stack Underflow"):
+        test_evm.run()
+
+def test_swap1():
+
+    bytecode = bytes.fromhex("600560039000")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [3, 5]
+
+    assert test_evm.pc == 5
+
+def test_swap1_multiple():
+
+    bytecode = bytes.fromhex("6003600560079000")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [3, 7, 5]
+
+    assert test_evm.pc == 7
+
+def test_swap1_empty():
+
+    bytecode = bytes.fromhex("9000")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    with pytest.raises(RuntimeError, match="Stack Underflow"):
+        test_evm.run()
+
+def test_swap_single():
+
+    bytecode = bytes.fromhex("60039000")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    with pytest.raises(RuntimeError, match="Stack Underflow"):
+        test_evm.run()
