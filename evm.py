@@ -117,6 +117,57 @@ class MINIEVM:
             self.stack.append(value2)
 
             self.pc += 1            
+
+    def LT(self):
+
+        if (len(self.stack) < 2):
+            raise RuntimeError("Stack Underflow")
+
+        else:
+            value1 = self.stack.pop()
+            value2 = self.stack.pop()
+
+            if (value2 > value1):
+                self.stack.append(1)
+
+            else:
+                self.stack.append(0)
+
+            self.pc += 1
+
+    def GT(self):
+
+        if (len(self.stack) < 2):
+            raise RuntimeError("Stack Underflow")
+
+        else:
+            value1 = self.stack.pop()
+            value2 = self.stack.pop()
+
+            if (value1 > value2):
+                self.stack.append(1)
+
+            else:
+                self.stack.append(0)
+
+            self.pc += 1
+
+    def EQ(self):
+
+        if (len(self.stack) < 2):
+            raise RuntimeError("Stack Underflow")
+
+        else:
+            value1 = self.stack.pop()
+            value2 = self.stack.pop()
+
+            if (value1 == value2):
+                self.stack.append(1)
+
+            else:
+                self.stack.append(0)
+
+            self.pc += 1
             
     def step(self):
 
@@ -150,6 +201,15 @@ class MINIEVM:
 
             elif (self.code[self.pc] == 0x90):
                 self.SWAP1()
+
+            elif (self.code[self.pc] == 0x10):
+                self.LT()
+
+            elif (self.code[self.pc] == 0x11):
+                self.GT()
+
+            elif (self.code[self.pc] == 0x14):
+                self.EQ()
                 
             else:
                 raise ValueError("Unsupported Opcode")
