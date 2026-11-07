@@ -465,3 +465,48 @@ def test_eq_stack_underflow():
 
     with pytest.raises(RuntimeError, match="Stack Underflow"):
         test_evm.run()
+
+def test_iszero_true():
+
+    bytecode = bytes.fromhex("60001500")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [1]
+
+    assert test_evm.pc == 3
+
+def test_iszero_false():
+
+    bytecode = bytes.fromhex("60051500")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [0]
+
+    assert test_evm.pc == 3
+
+def test_iszero_multiple():
+
+    bytecode = bytes.fromhex("600560001500")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [5, 1]
+
+    assert test_evm.pc == 5
+
+def test_iszero_stack_underflow():
+
+    bytecode = bytes.fromhex("1500")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    with pytest.raises(RuntimeError, match="Stack Underflow"):
+        test_evm.run()

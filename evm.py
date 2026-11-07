@@ -168,6 +168,22 @@ class MINIEVM:
                 self.stack.append(0)
 
             self.pc += 1
+
+    def ISZERO(self):
+
+        if (len(self.stack) == 0):
+            raise RuntimeError("Stack Underflow")
+
+        else:
+            value = self.stack.pop()
+
+            if (value == 0):
+                self.stack.append(1)
+
+            else:
+                self.stack.append(0)
+
+            self.pc += 1
             
     def step(self):
 
@@ -210,6 +226,9 @@ class MINIEVM:
 
             elif (self.code[self.pc] == 0x14):
                 self.EQ()
+
+            elif (self.code[self.pc] == 0x15):
+                self.ISZERO()
                 
             else:
                 raise ValueError("Unsupported Opcode")
