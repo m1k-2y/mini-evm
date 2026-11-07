@@ -53,7 +53,7 @@ def test_empty_bytecode():
 
     assert test_evm.halted == True
 
-def test_stack_underflow_zero_element():
+def test_add_stack_underflow_zero_element():
 
     bytecode = bytes.fromhex("0100")
 
@@ -62,7 +62,7 @@ def test_stack_underflow_zero_element():
     with pytest.raises(RuntimeError, match="Stack Underflow"):
         test_evm.run()
         
-def test_stack_underflow_one_element():
+def test_add_stack_underflow_one_element():
 
     bytecode = bytes.fromhex("60050100")
 
@@ -99,6 +99,49 @@ def test_add_overflow():
     test_evm = MINIEVM(bytecode, 100000)
 
     test_evm.stack = [2 ** 256 - 1, 1]
+
+    test_evm.run()
+
+    assert test_evm.stack == [0]
+
+def test_mul():
+
+    bytecode = bytes.fromhex("600560030200")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [15]
+
+    assert test_evm.pc == 5
+
+def test_mul_zero():
+
+    bytecode = bytes.fromhex("600560000200")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [0]
+
+def test_mul_stack_underflow():
+
+    bytecode = bytes.fromhex("60050200")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    with pytest.raises(RuntimeError, match="Stack Underflow"):
+        test_evm.run()
+
+def test_mul_overflow():
+
+    bytecode = bytes.fromhex("0200")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.stack = [2 ** 255, 2]
 
     test_evm.run()
 
