@@ -36,7 +36,7 @@ class MINIEVM:
             self.stack.append(value)
 
             self.pc += 1
-        
+
     def step(self):
 
         if (self.pc >= len(self.code)):
