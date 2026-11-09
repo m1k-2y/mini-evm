@@ -510,3 +510,105 @@ def test_iszero_stack_underflow():
 
     with pytest.raises(RuntimeError, match="Stack Underflow"):
         test_evm.run()
+
+def test_and():
+
+    bytecode = bytes.fromhex("600C600A1600")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [8]
+
+    assert test_evm.pc == 5
+
+def test_and_zero():
+
+    bytecode = bytes.fromhex("600A60001600")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [0]
+
+    assert test_evm.pc == 5
+
+def test_and_underflow():
+
+    bytecode = bytes.fromhex("1600")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    with pytest.raises(RuntimeError, match="Stack Underflow"):
+        test_evm.run()
+
+def test_or():
+
+    bytecode = bytes.fromhex("600C600A1700")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [14]
+
+    assert test_evm.pc == 5
+
+def test_or_zero():
+
+    bytecode = bytes.fromhex("600560001700")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [5]
+
+    assert test_evm.pc == 5
+
+def test_or_underflow():
+
+    bytecode = bytes.fromhex("1700")
+
+    test_evm = MINIEVM(bytecode, 1000000)
+
+    with pytest.raises(RuntimeError, match="Stack Underflow"):
+        test_evm.run()
+
+def test_not_zero():
+
+    bytecode = bytes.fromhex("60001900")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [2 ** 256 - 1]
+
+    assert test_evm.pc == 3
+
+def test_not_one():
+
+    bytecode = bytes.fromhex("60011900")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.run()
+
+    assert test_evm.stack == [2 ** 256 - 2]
+
+    assert test_evm.pc == 3
+
+def test_not_underflow():
+
+    bytecode = bytes.fromhex("1900")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    with pytest.raises(RuntimeError, match="Stack Underflow"):
+        test_evm.run()
+
+    
+    
