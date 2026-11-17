@@ -8,15 +8,23 @@ class MINIEVM:
         self.storage = {}
         self.halted = False
 
+    def PUSH(self, value):
+
+        if (len(self.stack) >= 1024):
+            raise RuntimeError("Stack Overflow")
+
+        else:
+            self.stack.append(value)
+        
     def PUSH1(self):
 
         self.pc += 1
 
         if (self.pc == len(self.code)):
-            self.stack.append(0)
+            self.PUSH(0)
 
         else:
-            self.stack.append(self.code[self.pc])
+            self.PUSH(self.code[self.pc])
 
         self.pc += 1
 
@@ -33,7 +41,7 @@ class MINIEVM:
             value = self.stack.pop()
             value = (value + self.stack.pop()) % (2 ** 256)
 
-            self.stack.append(value)
+            self.PUSH(value)
 
             self.pc += 1
 
@@ -46,7 +54,7 @@ class MINIEVM:
             value = self.stack.pop()
             value = (value * self.stack.pop()) % (2 ** 256)
 
-            self.stack.append(value)
+            self.PUSH(value)
 
             self.pc += 1
 
@@ -59,7 +67,7 @@ class MINIEVM:
             value = self.stack.pop()
             value = (value - self.stack.pop()) % (2 ** 256)
 
-            self.stack.append(value)
+            self.PUSH(value)
 
             self.pc += 1
 
@@ -73,12 +81,12 @@ class MINIEVM:
             value2 = self.stack.pop()
 
             if (value2 == 0):
-                self.stack.append(0)
+                self.PUSH(0)
 
             else:
                 value = int(value1 / value2)
 
-                self.stack.append(value)
+                self.PUSH(value)
 
             self.pc += 1
 
@@ -100,7 +108,7 @@ class MINIEVM:
         else:
             value = self.stack[len(self.stack) - 1]
 
-            self.stack.append(value)
+            self.PUSH(value)
 
             self.pc += 1
 
@@ -113,8 +121,8 @@ class MINIEVM:
             value1 = self.stack.pop()
             value2 = self.stack.pop()
 
-            self.stack.append(value1)
-            self.stack.append(value2)
+            self.PUSH(value1)
+            self.PUSH(value2)
 
             self.pc += 1            
 
@@ -128,10 +136,10 @@ class MINIEVM:
             value2 = self.stack.pop()
 
             if (value2 > value1):
-                self.stack.append(1)
+                self.PUSH(1)
 
             else:
-                self.stack.append(0)
+                self.PUSH(0)
 
             self.pc += 1
 
@@ -145,10 +153,10 @@ class MINIEVM:
             value2 = self.stack.pop()
 
             if (value1 > value2):
-                self.stack.append(1)
+                self.PUSH(1)
 
             else:
-                self.stack.append(0)
+                self.PUSH(0)
 
             self.pc += 1
 
@@ -162,10 +170,10 @@ class MINIEVM:
             value2 = self.stack.pop()
 
             if (value1 == value2):
-                self.stack.append(1)
+                self.PUSH(1)
 
             else:
-                self.stack.append(0)
+                self.PUSH(0)
 
             self.pc += 1
 
@@ -178,10 +186,10 @@ class MINIEVM:
             value = self.stack.pop()
 
             if (value == 0):
-                self.stack.append(1)
+                self.PUSH(1)
 
             else:
-                self.stack.append(0)
+                self.PUSH(0)
 
             self.pc += 1
 
@@ -196,7 +204,7 @@ class MINIEVM:
 
             value = value1 & value2
 
-            self.stack.append(value)
+            self.PUSH(value)
 
             self.pc += 1
 
@@ -211,7 +219,7 @@ class MINIEVM:
 
             value = value1 | value2
 
-            self.stack.append(value)
+            self.PUSH(value)
 
             self.pc += 1
 
@@ -227,7 +235,7 @@ class MINIEVM:
 
             value = ~(value) & mask
 
-            self.stack.append(value)
+            self.PUSH(value)
 
             self.pc += 1
             
