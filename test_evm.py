@@ -610,5 +610,77 @@ def test_not_underflow():
     with pytest.raises(RuntimeError, match="Stack Underflow"):
         test_evm.run()
 
+def test_push1_limit():
+
+    bytecode = bytes.fromhex("600A00")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.stack = [0] * 1023
+
+    test_evm.run()
+
+    assert len(test_evm.stack) == 1024
+
+def test_push1_overflow():
+
+    bytecode = bytes.fromhex("600A00")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.stack = [0] * 1024
+
+    with pytest.raises(RuntimeError, match="Stack Overflow"):
+        test_evm.run()
+
+def test_dup1_limit():
+
+    bytecode = bytes.fromhex("8000")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.stack = [0] * 1023
+
+    test_evm.run()
+
+    assert len(test_evm.stack) == 1024
+
+def test_dup1_overflow():
+
+    bytecode = bytes.fromhex("8000")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.stack = [0] * 1024
+
+    with pytest.raises(RuntimeError, match="Stack Overflow"):
+        test_evm.run()
+
+def test_add_full_stack():
+
+    bytecode = bytes.fromhex("0100")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.stack = [0] * 1024
+
+    test_evm.run()
+
+    assert len(test_evm.stack) == 1023
+
+def test_not_full_stack():
+
+    bytecode = bytes.fromhex("1900")
+
+    test_evm = MINIEVM(bytecode, 100000)
+
+    test_evm.stack = [0] * 1024
+
+    test_evm.run()
+
+    assert len(test_evm.stack) == 1024
+
+    
+
     
     
