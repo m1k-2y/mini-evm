@@ -8,6 +8,14 @@ class MINIEVM:
         self.storage = {}
         self.halted = False
 
+    def consume_gas(self, cost):
+
+        if (self.gas_remaining - cost < 0):
+            raise RuntimeError("Out of gas")
+
+        else:
+            self.gas_remaining -= cost
+        
     def PUSH(self, value):
 
         if (len(self.stack) >= 1024):
@@ -247,51 +255,67 @@ class MINIEVM:
 
         else:
             if (self.code[self.pc] == 0x60):
-               self.PUSH1()
+                self.consume_gas(3)
+                self.PUSH1()
 
             elif (self.code[self.pc] == 0x00):
+                self.consume_gas(0)
                 self.STOP()
 
             elif (self.code[self.pc] == 0x01):
+                self.consume_gas(3)
                 self.ADD()
 
             elif (self.code[self.pc] == 0x02):
+                self.consume_gas(5)
                 self.MUL()
 
             elif (self.code[self.pc] == 0x03):
+                self.consume_gas(3)
                 self.SUB()
 
             elif (self.code[self.pc] == 0x04):
+                self.consume_gas(5)
                 self.DIV()
 
             elif (self.code[self.pc] == 0x50):
+                self.consume_gas(2)
                 self.POP()
 
             elif (self.code[self.pc] == 0x80):
+                self.consume_gas(3)
                 self.DUP1()
 
             elif (self.code[self.pc] == 0x90):
+                self.consume_gas(3)
                 self.SWAP1()
 
             elif (self.code[self.pc] == 0x10):
+                self.consume_gas(3)
                 self.LT()
 
             elif (self.code[self.pc] == 0x11):
+                self.consume_gas(3)
                 self.GT()
 
             elif (self.code[self.pc] == 0x14):
+                self.consume_gas(3)
                 self.EQ()
 
             elif (self.code[self.pc] == 0x15):
+                self.consume_gas(3)
                 self.ISZERO()
 
             elif (self.code[self.pc] == 0x16):
+                self.consume_gas(3)
                 self.AND()
 
             elif (self.code[self.pc] == 0x17):
+                self.consume_gas(3)
                 self.OR()
 
             elif (self.code[self.pc] == 0x19):
+                self.consume_gas(3)
                 self.NOT()
                 
             else:
