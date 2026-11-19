@@ -11,7 +11,7 @@ class MINIEVM:
     def consume_gas(self, cost):
 
         if (self.gas_remaining - cost < 0):
-            raise RuntimeError("Out of gas")
+            raise RuntimeError("Out of Gas")
 
         else:
             self.gas_remaining -= cost

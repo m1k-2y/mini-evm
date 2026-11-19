@@ -680,7 +680,96 @@ def test_not_full_stack():
 
     assert len(test_evm.stack) == 1024
 
-    
+def test_push1_consume_gas():
 
-    
+    bytecode = bytes.fromhex("600A00")
+
+    test_evm = MINIEVM(bytecode, 10)
+
+    test_evm.run()
+
+    assert test_evm.gas_remaining == 7
+
+def test_add_consume_gas():
+
+    bytecode = bytes.fromhex("600160020100")
+
+    test_evm = MINIEVM(bytecode, 10)
+
+    test_evm.run()
+
+    assert test_evm.gas_remaining == 1
+
+def test_mul_consume_gas():
+
+    bytecode = bytes.fromhex("600360040200")
+
+    test_evm = MINIEVM(bytecode, 11)
+
+    test_evm.run()
+
+    assert test_evm.gas_remaining == 0
+
+def test_out_of_gas():
+
+    bytecode = bytes.fromhex("600160020100")
+
+    test_evm = MINIEVM(bytecode, 8)
+
+    with pytest.raises(RuntimeError, match="Out of Gas"):
+        test_evm.run()
+
+    assert test_evm.stack == [1, 2]
+
+    assert test_evm.pc == 4
+
+def test_exactly_consume_gas():
+
+    bytecode = bytes.fromhex("6005600200")
+
+    test_evm = MINIEVM(bytecode, 6)
+
+    test_evm.run()
+
+    assert test_evm.stack == [5, 2]
+
+def test_stop_consume_gas():
+
+    bytecode = bytes.fromhex("00")
+
+    test_evm = MINIEVM(bytecode, 5)
+
+    test_evm.run()
+
+    assert test_evm.gas_remaining == 5
+
+def test_consume_gas():
+
+    bytecode = bytes.fromhex("")
+
+    test_evm = MINIEVM(bytecode, 10)
+
+    test_evm.consume_gas(3)
+
+    assert test_evm.gas_remaining == 7
+
+def test_consume_gas_exact():
+
+    bytecode = bytes.fromhex("")
+
+    test_evm = MINIEVM(bytecode, 10)
+
+    test_evm.consume_gas(10)
+
+    assert test_evm.gas_remaining == 0
+
+def test_consume_gas_over():
+
+    bytecode = bytes.fromhex("")
+
+    test_evm = MINIEVM(bytecode, 10)
+
+    with pytest.raises(RuntimeError, match="Out of Gas"):
+        test_evm.consume_gas(15)
+
     
