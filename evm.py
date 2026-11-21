@@ -5,6 +5,7 @@ class MINIEVM:
         self.pc = 0
         self.stack = []
         self.gas_remaining = gas_limit
+        self.memory = bytearray()
         self.storage = {}
         self.halted = False
 
@@ -246,6 +247,24 @@ class MINIEVM:
             self.PUSH(value)
 
             self.pc += 1
+
+    def MLOAD(self):
+
+        if (len(self.stack) < 2):
+            raise RuntimeError("Stack Underflow")
+
+        else:
+            payload = self.stack.pop()
+
+            value = self.stack.pop()
+
+            memory_len = len(self.memory)
+
+            if (memory_len - 1 < payload + 31):
+                self.memory.extend(bytearray(payload - memory_len + 32))
+
+            
+                                   
             
             
     def step(self):
